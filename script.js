@@ -1,62 +1,55 @@
-const sheetID = '1hCIqkod6LDRs8pzpcXTUU6w7MhRJ8bcmY_QlECySOSU';
-const sheetName = 'Sheet1';
+const sheetID = '1xRIar17xxjPFhcP2LzQstUwHUdEqBZZqi82f1NELU1U';
+const sheetName = 'Questions';
 const url = `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?tqx=out:json&sheet=${sheetName}`;
-
-let tableData = [];
-let headers = [];
 
 fetch(url)
     .then(res => res.text())
     .then(text => {
         const jsonData = JSON.parse(text.substring(47).slice(0, -2));
         const rows = jsonData.table.rows;
+        const form = document.getElementById('survey-form');
 
-        headers = rows[0].c.map(cell => cell?.v || '');
-        tableData = rows.slice(1).map(row => row.c.map(cell => cell?.v || ''));
+        rows.forEach(row => {
+            const qId = row.c[0]?.v;
+            const question = row.c[1]?.v;
+            const options = [row.c[2]?.v, row.c[3]?.v, row.c[4]?.v, row.c[5]?.v].filter(Boolean);
 
-        renderTable(tableData);
+            const fieldset = document.createElement('fieldset');
+            fieldset.innerHTML = `<legend>${question}</legend>`;
 
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const searchValue = this.value.toLowerCase();
-            const filteredData = tableData.filter(row =>
-                row.some(cell => cell.toLowerCase().includes(searchValue))
-            );
-            renderTable(filteredData);
+            options.forEach(opt => {
+                const label = document.createElement('label');
+                label.innerHTML = `
+                    <input type="radio" name="${qId}" value="${opt}" required> ${opt}
+                `;
+                fieldset.appendChild(label);
+            });
+
+            form.appendChild(fieldset);
         });
     })
-    .catch(err => console.error('Error loading sheet data:', err));
+    .catch(err => console.error(err));
 
-function renderTable(data) {
-    let html = '<table><thead><tr>';
-    headers.forEach((header, index) => {
-        html += `<th onclick="sortTable(${index})">${header} &#x25B2;&#x25BC;</th>`;
-    });
-    html += '</tr></thead><tbody>';
-    data.forEach(row => {
-        html += '<tr>';
-        row.forEach(cell => {
-            html += `<td>${cell}</td>`;
-        });
-        html += '</tr>';
-    });
-    html += '</tbody></table>';
-
-    document.getElementById('sheet-data').innerHTML = html;
-}
-
-function sortTable(colIndex) {
-    let sortedData = [...tableData];
-    const isNumberColumn = sortedData.every(row => !isNaN(row[colIndex]) && row[colIndex] !== '');
-
-    sortedData.sort((a, b) => {
-        const valA = a[colIndex];
-        const valB = b[colIndex];
-        if (isNumberColumn) {
-            return parseFloat(valA) - parseFloat(valB);
+document.getElementById('submit-btn').addEventListener('click', () => {
+    const form = document.getElementById('survey-form');
+    const questions = form.querySelectorAll('fieldset');
+    
+    questions.forEach(fieldset => {
+        const qId = fieldset.querySelector('input').name;
+        const selected = fieldset.querySelector('input:checked');
+        if (selected) {
+            submitResponse(qId, selected.value);
         }
-        return valA.localeCompare(valB);
     });
 
-    tableData = sortedData;
-    renderTable(tableData);
+    alert('Thanks for your feedback!');
+});
+
+function submitResponse(questionId, response) {
+    fetch('https://script.google.com/macros/s/AKfycbwnRsamkGU9RQxyv2zqYkKAlzd72lV1PlMfW_MNXkQ3YFvQTbCX0ga-X0ZYcNgB_bpj/exec', {
+        method: 'POST',
+        body: JSON.stringify({ questionId, response }),
+        headers: { 'Content-Type': 'application/json' },
+    })
+    .catch(err => console.error('Error submitting:', err));
 }
