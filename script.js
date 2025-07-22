@@ -46,7 +46,7 @@ document.getElementById('submit-btn').addEventListener('click', () => {
 });
 
 function submitResponse(questionId, response) {
-    fetch('https://script.google.com/macros/s/AKfycbwnRsamkGU9RQxyv2zqYkKAlzd72lV1PlMfW_MNXkQ3YFvQTbCX0ga-X0ZYcNgB_bpj/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbzCZGQexZg2nQ6MdG0EXG6xq635UpE9wqJp04QrHPYVMppRiivWyIJDvjf4FKLD9sIs/exec', {
         method: 'POST',
         body: JSON.stringify({ questionId, response }),
         headers: { 'Content-Type': 'application/json' },
