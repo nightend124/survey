@@ -1,56 +1,74 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
+    background-color: #f4f6f8;
     margin: 0;
     padding: 40px;
+    color: #333;
 }
 
 h1 {
     text-align: center;
     margin-bottom: 30px;
-    color: #00bcd4;
+    color: #4A90E2;
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+#searchInput {
+    padding: 10px;
+    width: 300px;
+    max-width: 90%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
 .table-container {
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow-x: auto;
 }
 
 table {
     width: 80%;
+    min-width: 400px;
     border-collapse: collapse;
-    background-color: #1e1e1e;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
 }
 
 th, td {
     padding: 12px 20px;
-    border: 1px solid #333;
+    border: 1px solid #ddd;
     text-align: center;
+    cursor: pointer;
 }
 
 th {
-    background-color: #00bcd4;
-    color: #121212;
+    background-color: #4A90E2;
+    color: #fff;
     font-weight: bold;
     text-transform: uppercase;
 }
 
 tr:nth-child(even) {
-    background-color: #2a2a2a;
-}
-
-tr:nth-child(odd) {
-    background-color: #1e1e1e;
+    background-color: #f9f9f9;
 }
 
 tr:hover {
-    background-color: #333333;
+    background-color: #f1f1f1;
     transition: 0.3s;
 }
 
-a {
-    color: #00bcd4;
+@media (max-width: 600px) {
+    table {
+        font-size: 14px;
+    }
+    th, td {
+        padding: 8px;
+    }
 }
